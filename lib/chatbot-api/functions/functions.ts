@@ -4,7 +4,6 @@ import * as path from 'path';
 
 // Import Lambda L2 construct
 import * as lambda from 'aws-cdk-lib/aws-lambda';
-import { S3EventSource } from 'aws-cdk-lib/aws-lambda-event-sources';
 import * as iam from 'aws-cdk-lib/aws-iam';
 import { Table } from 'aws-cdk-lib/aws-dynamodb';
 import * as s3 from "aws-cdk-lib/aws-s3";
@@ -128,6 +127,14 @@ export class LambdaFunctionStack extends cdk.Stack {
             'lambda:InvokeFunction'
           ],
           resources: [this.sessionFunction.functionArn]
+        }));
+        websocketAPIFunction.addToRolePolicy(new iam.PolicyStatement({
+          effect: iam.Effect.ALLOW,
+          actions: [
+            'translate:*',
+            'comprehend:*'
+          ],
+          resources: ["*"]
         }));
         
         this.chatFunction = websocketAPIFunction;
